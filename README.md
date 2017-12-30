@@ -1,6 +1,6 @@
-# WeatherFrog
+# Arduino Weather Frog
 
-display 24h log for BMP280 pressure and temperatur with simple clock, forecast on ST7735 TFT.
+display 24h log for BMP280 pressure and temperatur with simple clock, forecast on ST7735 TFT and arduino.
 
 ## Pictures
 
@@ -94,3 +94,67 @@ To make the logging a bit faster, look at `void tick()` function.
 If you uncomment the `//dostore = true;` line, it stores a value every
 second and not every 12 minutes. Because I did not refresh the TFT,
 the curve gets bolder every second :-D
+
+## store and draw a curve?
+
+My `struct Midways` is a bit fat in this project. It stores and prints
+values. I use a lighther one in a different project:
+
+~~~~cpp
+struct Midways {
+  uint8_t _basic;
+  uint8_t _val[MIDSIZE];
+  int _nxt;
+
+  Midways(uint8_t initval) {
+    _nxt = 0;
+    _basic = initval;
+    for (int i=0; i<MIDSIZE; ++i) { 
+      _val[i] = _basic;
+    }
+  }
+
+  void add(float val) {
+    _val[_nxt] = val;
+    _nxt++;
+    if (_nxt == MIDSIZE) _nxt = 0;
+    
+    /*  modify basic with 50% of difference from middle.
+     *  This makes it easier to equalize pressure changes on a longer timespan and
+     *  force detecting altitude changes in a short timespan.
+     */
+    _basic += 0.1 * (midget() - (float)_basic);
+  }
+
+  float midget() {
+    float mid = 0;
+    for (int i=0; i<MIDSIZE; ++i) mid += _val[i];
+    
+    return mid/(float)MIDSIZE;
+  }
+
+  void draw(byte x, byte y, float fak) {
+    int id = _nxt-1;
+    float mid = midget();
+    if (id < 0) id += MIDSIZE;
+
+    byte lastx,lasty;
+    byte dx = x + XDOUBLE*(MIDSIZE);
+    short dy = y - fak*((float)_val[id] - mid);
+    
+    for (int i=0; i<MIDSIZE; ++i) {
+      lastx = dx;
+      lasty = dy;
+      dx = x + XDOUBLE*(MIDSIZE-i);
+      dy = y - fak*((float)_val[id] - mid);
+      if (dy < 0 || dy > 63) dy = 0; // the display height: 64
+      oled->drawLine(lastx, lasty, dx, dy, WHITE);
+      id--;
+      if (id < 0) id += MIDSIZE;
+    }
+  }
+};
+~~~~
+
+A `#define XDOUBLE 2.0` value enlarge MIDSIZE = 20(values) to a width=40.
+The `fak` value spreads the stored values in the y-direction.
