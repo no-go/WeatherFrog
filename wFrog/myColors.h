@@ -1,0 +1,12 @@
+#define BLACK           0b0000000000000000
+#define GREY            0b0001000010000011
+#define GREYBLUE        0b1000000100000100
+#define LIGHTBLUE       0b1111101000001100
+#define CYAN            0b1111111111100000
+#define BLUE            0b1111100000000000 
+#define RED             0b0000000000011111 
+#define GREEN           0b0000011111100000  
+#define YELLOW          0b0000011111111111  
+#define ORANGE          0b0011101111111111
+#define WHITE           0b1111111111111111
+
