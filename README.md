@@ -43,7 +43,7 @@ red = empty
 
 ## Forecast
 
-It is not easy to make a weather forecast. on a see there is a easy
+It is not easy to make a weather forecast. On sea there is a easy
 way to analyse the pressure. If the pressure grows up: A high pressure
 area is coming with sun and vice versa.
 
