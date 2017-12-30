@@ -158,3 +158,6 @@ struct Midways {
 
 A `#define XDOUBLE 2.0` value enlarge MIDSIZE = 20(values) to a width=40.
 The `fak` value spreads the stored values in the y-direction.
+
+Did you see the typecast trouble? I use byte, uint8_t and float! That
+is not a good and save value handling!!
